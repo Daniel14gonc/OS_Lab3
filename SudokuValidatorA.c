@@ -17,7 +17,6 @@ int result;
 int checkRows() {
     int i, j, res;
     int valid = 0;
-    #pragma omp parallel for private(j, res, valid)
     for (int i = 0; i < 9; i++) {
         res = 0;
         for (int j = 0; j < 9; j++) {
@@ -36,7 +35,6 @@ int checkRows() {
 int checkColumns() {
     int i, j, res;
     int valid = 0;
-    #pragma omp parallel for private(j, res, valid)
     for (i = 0; i < 9; i++) {
         result = 0;
         long threadId = syscall(SYS_gettid);
@@ -88,8 +86,8 @@ void* columnCheck(void* arg) {
 
 }
 
-int main() {
-    char* path = "sudoku";
+int main(int argc, char* argv[]) {
+    char* path = argv[1];
     int fileDesc = open(path, O_RDONLY);
 
     char* f;
