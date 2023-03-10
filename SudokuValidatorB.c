@@ -18,7 +18,9 @@ int result;
 int checkRows() {
     int i, j, res;
     int valid = 0;
-    #pragma omp parallel for private(j, res, valid) schedule(dynamic)
+    omp_set_num_threads(9);
+    omp_set_nested(true);
+    #pragma omp parallel for private(j, res) schedule(dynamic)
     for (int i = 0; i < 9; i++) {
         res = 0;
         for (int j = 0; j < 9; j++) {
@@ -37,7 +39,9 @@ int checkRows() {
 int checkColumns() {
     int i, j, res;
     int valid = 0;
-    #pragma omp parallel for private(j, res, valid) schedule(dynamic)
+    omp_set_num_threads(9);
+    omp_set_nested(true);
+    #pragma omp parallel for private(j, res) // schedule(dynamic)
     for (i = 0; i < 9; i++) {
         res = 0;
         long threadId = syscall(SYS_gettid);
@@ -53,14 +57,15 @@ int checkColumns() {
             valid = -1;
         }
     }
-
-    return 0;
+    return valid;
 }
 
 int checkSubarray() {
     int i, j, k, m, res;
     int valid = 0;
-    #pragma omp parallel for private(j, k, m, res, valid) schedule(dynamic)
+    omp_set_num_threads(3);
+    omp_set_nested(true);
+    #pragma omp parallel for private(j, k, m, res) schedule(dynamic)
     for (i = 0; i < 9; i += 3) {
         for (j = 0; j < 9; j += 3) {
             int checked[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0}; 
@@ -78,7 +83,7 @@ int checkSubarray() {
             }
         }
     }
-    return 0;
+    return valid;
 }
 
 void* columnCheck(void* arg) {

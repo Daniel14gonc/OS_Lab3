@@ -51,7 +51,7 @@ int checkColumns() {
         }
     }
 
-    return 0;
+    return valid;
 }
 
 int checkSubarray() {
