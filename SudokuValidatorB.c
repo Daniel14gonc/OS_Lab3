@@ -23,7 +23,7 @@ int checkRows() {
     #pragma omp parallel for private(j, res) schedule(dynamic)
     for (int i = 0; i < 9; i++) {
         res = 0;
-        #pragma omp parallel for private(j, res) // schedule(dynamic)
+        #pragma omp parallel for private(j) schedule(dynamic)
         for (int j = 0; j < 9; j++) {
             int valueMatrix = sudoku[i][j];
             if (valueMatrix < 1 || valueMatrix > 9) 
@@ -47,7 +47,7 @@ int checkColumns() {
         res = 0;
         long threadId = syscall(SYS_gettid);
         printf("En la revision de columnas el siguiente es un thread en ejecucion: %ld\n", threadId);
-        #pragma omp parallel for private(j, res)
+        #pragma omp parallel for private(j) schedule(dynamic)
         for (j = 0; j < 9; j++) {
             int valueMatrix = sudoku[j][i];
             if (valueMatrix < 1 || valueMatrix > 9) 
@@ -64,13 +64,13 @@ int checkColumns() {
 int checkSubarray() {
     int i, j, k, m, res;
     int valid = 0;
-    omp_set_num_threads(1);
+    omp_set_num_threads(3);
     omp_set_nested(true);
     #pragma omp parallel for private(j, k, m, res) schedule(dynamic)
     for (i = 0; i < 9; i += 3) {
-        #pragma omp parallel for private(j, k, m, res) schedule(dynamic)
+        #pragma omp parallel for private(j, k, m) schedule(dynamic)
         for (j = 0; j < 9; j += 3) {
-            // #pragma omp parallel for private(j, k, m, res) // schedule(dynamic)
+            #pragma omp parallel for private(k, m) schedule(dynamic)
             for (k = i; k < i + 3; k++) {
                 for (m = j; m < j + 3; m++) {
                     int value = sudoku[k][m];
